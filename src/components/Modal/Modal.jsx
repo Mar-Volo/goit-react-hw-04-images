@@ -1,38 +1,38 @@
 import PropTypes from 'prop-types';
-import { Component } from 'react';
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { BackDrop } from './Modal.styled';
 import { ModalBox } from './Modal.styled';
 
 const ModalRoot = document.querySelector('#ModalRoot');
 
-export class Modal extends Component {
-  componentDidMount() {
-    window.addEventListener('keydown', this.escClose);
-  }
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.escClose);
-  }
-  escClose = e => {
+export const Modal = ({ handleClose, children }) => {
+  useEffect(() => {
+    window.addEventListener('keydown', escClose);
+    return () => {
+      window.removeEventListener('keydown', escClose);
+    };
+  });
+
+  const escClose = e => {
     if (e.code === 'Escape') {
-      this.props.handleClose();
+      handleClose();
     }
   };
-  onBackDropClose = e => {
+  const onBackDropClose = e => {
     if (e.target === e.currentTarget) {
-      this.props.handleClose();
+      handleClose();
     }
   };
 
-  render() {
-    return createPortal(
-      <BackDrop onClick={this.onBackDropClose}>
-        <ModalBox>{this.props.children}</ModalBox>
-      </BackDrop>,
-      ModalRoot
-    );
-  }
-}
+  return createPortal(
+    <BackDrop onClick={onBackDropClose}>
+      <ModalBox>{children}</ModalBox>
+    </BackDrop>,
+    ModalRoot
+  );
+};
 Modal.propTypes = {
   handleClose: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
 };
