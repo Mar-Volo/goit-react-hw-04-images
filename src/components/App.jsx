@@ -41,7 +41,7 @@ export const App = () => {
         } else {
           setSearchQuery(searchQuery);
           setTotalHits(totalHits);
-          setHits(prevHits => [...prevHits, ...hits]);
+          setHits(hits);
           setStatus('resolved');
         }
       } catch (error) {
